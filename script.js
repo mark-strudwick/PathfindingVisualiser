@@ -14,11 +14,6 @@ const mouse = {
     down: false
 }
 
-window.addEventListener("mousemove", function (e) {
-    mouse.x = event.x;
-    mouse.y = event.y;
-});
-
 class Board {
     constructor() {
         this.nodes = [];
@@ -44,6 +39,7 @@ class Board {
     }
 
     drawBoard() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         for (let i = 0; i < this.nodes.length; i++) {
             this.nodes[i].draw();
         }
@@ -51,11 +47,12 @@ class Board {
 }
 
 class Node {
-    constructor(row, column, isStart, isFinish) {
+    constructor(row, column, isStart, isFinish, isWall) {
         this.row = row;
         this.column = column;
         this.isStart = isStart;
         this.isFinish = isFinish;
+        this.isWall = isWall;
     }
 
     draw() {
@@ -64,6 +61,9 @@ class Node {
             ctx.fillRect(this.column * nodeSize, this.row * nodeSize, nodeSize, nodeSize);
         } else if (this.isFinish == true) {
             ctx.fillStyle = "red";
+            ctx.fillRect(this.column * nodeSize, this.row * nodeSize, nodeSize, nodeSize);
+        } else if (this.isWall == true) {
+            ctx.fillStyle = "black";
             ctx.fillRect(this.column * nodeSize, this.row * nodeSize, nodeSize, nodeSize);
         } else {
             ctx.lineWidth = 0.5;
@@ -74,16 +74,12 @@ class Node {
     }
 }
 
-
-/*function setMouse(e) {
+function setMouse(e) {
     let rect = canvas.getBoundingClientRect()
     mouse.px = mouse.x
     mouse.py = mouse.y
     mouse.x = e.clientX - rect.left
     mouse.y = e.clientY - rect.top
-    console.log(mouse.x, mouse.y);
-    console.log(rect);
-    ctx.clearRect
 }
 
 canvas.onmousedown = (e) => {
@@ -92,7 +88,11 @@ canvas.onmousedown = (e) => {
     setMouse(e)
 }
 
-canvas.onmouseup = () => (mouse.down = false)*/
+canvas.onmousemove = setMouse
+
+canvas.onmouseup = () => (mouse.down = false)
+
+canvas.oncontextmenu = (e) => e.preventDefault()
 
 let board = new Board();
 board.drawBoard();
