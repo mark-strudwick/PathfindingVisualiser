@@ -34,7 +34,7 @@ class Board {
                 else {
                     var isFinish = false;
                 }
-                let node = new Node(r, c, isStart, isFinish);
+                let node = new Node(r, c, isStart, isFinish, false);
                 this.nodes.push(node);
             }
         }
@@ -91,7 +91,7 @@ canvas.onmousedown = (e) => {
     mouse.button = e.which
     mouse.down = true
     setMouse(e)
-    board.nodes[board.nodes.findIndex(node => node.column == Math.round(mouse.x / nodeSize) && node.row == Math.round(mouse.y / nodeSize))].isWall = true;
+    board.nodes[board.nodes.findIndex(node => node.column == Math.floor(mouse.x / nodeSize) && node.row == Math.floor(mouse.y / nodeSize))].isWall ^= true;
     board.drawBoard();
 }
 
