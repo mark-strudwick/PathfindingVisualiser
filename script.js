@@ -1,16 +1,18 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-canvas.width = 1000;
-canvas.height = 500;
+canvas.width = 2000;
+canvas.height = 800;
 
-const rows = 25;
-const columns = 50;
-const nodeSize = 20;
+const rows = 32;
+const columns = 80;
+const nodeSize = 25;
 
 const mouse = {
     x: undefined,
     y: undefined,
+    px: undefined,
+    py: undefined,
     down: false
 }
 
@@ -47,12 +49,15 @@ class Board {
 }
 
 class Node {
-    constructor(row, column, isStart, isFinish, isWall) {
+    constructor(row, column, isStart, isFinish, isWall, onMouseDown, onMouseEnter, onMouseUp) {
         this.row = row;
         this.column = column;
         this.isStart = isStart;
         this.isFinish = isFinish;
         this.isWall = isWall;
+        this.onMouseDown = onMouseDown;
+        this.onMouseEnter = onMouseEnter;
+        this.onMouseUp = onMouseUp;
     }
 
     draw() {
@@ -66,7 +71,7 @@ class Node {
             ctx.fillStyle = "black";
             ctx.fillRect(this.column * nodeSize, this.row * nodeSize, nodeSize, nodeSize);
         } else {
-            ctx.lineWidth = 0.5;
+            ctx.lineWidth = 1;
             ctx.strokeStyle = "black";
             ctx.strokeRect(this.column * nodeSize, this.row * nodeSize, nodeSize, nodeSize);
         }
@@ -86,6 +91,8 @@ canvas.onmousedown = (e) => {
     mouse.button = e.which
     mouse.down = true
     setMouse(e)
+    board.nodes[board.nodes.findIndex(node => node.column == Math.round(mouse.x / nodeSize) && node.row == Math.round(mouse.y / nodeSize))].isWall = true;
+    board.drawBoard();
 }
 
 canvas.onmousemove = setMouse
@@ -96,3 +103,4 @@ canvas.oncontextmenu = (e) => e.preventDefault()
 
 let board = new Board();
 board.drawBoard();
+
