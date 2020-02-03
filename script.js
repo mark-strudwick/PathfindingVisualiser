@@ -46,6 +46,9 @@ class Board {
             this.nodes[i].draw();
         }
     }
+    getStartNode() {
+        return board.nodes.findIndex(node => node.isStart == true)
+    }
 }
 
 class Node {
@@ -85,14 +88,21 @@ function setMouse(e) {
     mouse.py = mouse.y
     mouse.x = e.clientX - rect.left
     mouse.y = e.clientY - rect.top
+
+    if (mouse.down == true && board.nodes[board.getStartNode()].column == Math.floor(mouse.x / nodeSize) && board.nodes[board.getStartNode()].row == Math.floor(mouse.y / nodeSize)) {
+        board.nodes[board.getStartNode()].isStart = false;
+        board.nodes[board.nodes.findIndex(node => node.column == Math.floor(mouse.px / nodeSize) && node.row == Math.floor(mouse.py / nodeSize))].isStart = true;
+    } else if (mouse.down == true) {
+        board.nodes[board.nodes.findIndex(node => node.column == Math.floor(mouse.x / nodeSize) && node.row == Math.floor(mouse.y / nodeSize))].isWall ^= true;
+        board.drawBoard();
+    }
+
 }
 
 canvas.onmousedown = (e) => {
     mouse.button = e.which
     mouse.down = true
     setMouse(e)
-    board.nodes[board.nodes.findIndex(node => node.column == Math.floor(mouse.x / nodeSize) && node.row == Math.floor(mouse.y / nodeSize))].isWall ^= true;
-    board.drawBoard();
 }
 
 canvas.onmousemove = setMouse
@@ -104,3 +114,4 @@ canvas.oncontextmenu = (e) => e.preventDefault()
 let board = new Board();
 board.drawBoard();
 
+// #c5e3f6 (blue), #fc5c9c (darkpink), #fccde2 (lightpink), #fcefee (cream)
