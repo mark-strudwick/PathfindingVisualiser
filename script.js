@@ -64,7 +64,6 @@ class Board {
             this.drawBoard();
         }
     }
-
 }
 
 class Node {
@@ -74,9 +73,10 @@ class Node {
         this.isStart = isStart;
         this.isFinish = isFinish;
         this.isWall = isWall;
-        this.distance = null;
+        this.distance = Infinity;
         this.isVisited = false;
         this.previousNode = null;
+        this.neighbours = [];
     }
     getColour() {
         if (this.isStart == true) {
@@ -103,7 +103,42 @@ class Node {
     clicked() {
         this.isWall = !this.isWall;
     }
+
 }
+
+function dijkstra(nodes) {
+    const visitedNodes = [];
+    // set startnode distance = 0
+    const unvisitedNodes = board.nodes;
+}
+
+function sortNodesByDistance(unvisitedNodes) {
+    unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
+}
+
+function getNeighbors(nodes, column, row) {
+    //top
+    if (column > 0 && nodes[column - 1][row]) {
+        board.nodes[column][row].neighbours.push(nodes[column - 1][row]);
+    }
+
+    //bottom
+    if (column < nodes.length - 1 && nodes[column + 1][row]) {
+        board.nodes[column][row].neighbours.push(nodes[column + 1][row]);
+    }
+
+    //left
+    if (nodes[column][row - 1]) {
+        board.nodes[column][row].neighbours.push(nodes[column][row - 1]);
+    }
+
+    //right
+    if (nodes[column][row + 1]) {
+        board.nodes[column][row].neighbours.push(nodes[column][row + 1]);
+    }
+}
+
+
 
 function setMouse(e) {
     let rect = canvas.getBoundingClientRect()
