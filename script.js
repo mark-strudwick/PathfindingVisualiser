@@ -1,102 +1,122 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-canvas.width = 2000;
+canvas.width = 1000;
 canvas.height = 800;
 
+const floor = Math.floor;
+
 const rows = 32;
-const columns = 80;
+const columns = 40;
 const nodeSize = 25;
 
 const mouse = {
     x: undefined,
     y: undefined,
-    px: undefined,
-    py: undefined,
+    dx: undefined,
+    dy: undefined,
     down: false
 }
 
 class Board {
     constructor() {
-        this.nodes = [];
+        this.nodes = new Array(columns);
 
-        for (let r = 0; r < rows; r++) {
-            for (let c = 0; c < columns; c++) {
-                if (r == 12 && c == 5) {
+        for (let column = 0; column < columns; column++) {
+            this.nodes[column] = new Array(rows);
+            for (let row = 0; row < rows; row++) {
+                if (column == 10 && row == 8) {
                     var isStart = true;
                 }
                 else {
                     var isStart = false;
                 }
-                if (r == 12 && c == 44) {
+                if (column == 10 && row == 10) {
                     var isFinish = true;
                 }
                 else {
                     var isFinish = false;
                 }
-                let node = new Node(r, c, isStart, isFinish, false);
-                this.nodes.push(node);
+                this.nodes[column][row] = new Node(column, row, isStart, isFinish, false);
+            }
+
+        }
+    }
+    drawBoard() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < columns; i++) {
+            for (let j = 0; j < rows; j++) {
+                this.nodes[i][j].draw();
             }
         }
     }
-
-    drawBoard() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (let i = 0; i < this.nodes.length; i++) {
-            this.nodes[i].draw();
+    updateBoard() {
+        if (mouse.down == true) {
+            if (this.nodes[mouse.dx][mouse.dy].isStart == true) {
+                this.nodes[mouse.dx][mouse.dy].isStart = false;
+                this.nodes[mouse.x][mouse.y].isStart = true;
+            } else if (this.nodes[mouse.dx][mouse.dy].isFinish == true) {
+                this.nodes[mouse.dx][mouse.dy].isFinish = false;
+                this.nodes[mouse.x][mouse.y].isFinish = true;
+            } else {
+                this.nodes[mouse.x][mouse.y].clicked();
+            }
+            this.drawBoard();
         }
     }
-    getStartNode() {
-        return board.nodes.findIndex(node => node.isStart == true)
-    }
+
 }
 
 class Node {
-    constructor(row, column, isStart, isFinish, isWall, onMouseDown, onMouseEnter, onMouseUp) {
+    constructor(row, column, isStart, isFinish, isWall) {
         this.row = row;
         this.column = column;
         this.isStart = isStart;
         this.isFinish = isFinish;
         this.isWall = isWall;
-        this.onMouseDown = onMouseDown;
-        this.onMouseEnter = onMouseEnter;
-        this.onMouseUp = onMouseUp;
+        this.distance = null;
+        this.isVisited = false;
+        this.previousNode = null;
     }
-
-    draw() {
+    getColour() {
         if (this.isStart == true) {
-            ctx.fillStyle = "green";
-            ctx.fillRect(this.column * nodeSize, this.row * nodeSize, nodeSize, nodeSize);
-        } else if (this.isFinish == true) {
-            ctx.fillStyle = "red";
-            ctx.fillRect(this.column * nodeSize, this.row * nodeSize, nodeSize, nodeSize);
-        } else if (this.isWall == true) {
-            ctx.fillStyle = "black";
-            ctx.fillRect(this.column * nodeSize, this.row * nodeSize, nodeSize, nodeSize);
-        } else {
-            ctx.lineWidth = 1;
-            ctx.strokeStyle = "black";
-            ctx.strokeRect(this.column * nodeSize, this.row * nodeSize, nodeSize, nodeSize);
-        }
+            return "#17b978";
 
+        } else if (this.isFinish == true) {
+            return "#f85959";
+
+        } else if (this.isWall == true) {
+            return "black";
+        }
+    }
+    draw() {
+        if (this.isStart == true || this.isFinish == true || this.isWall == true) {
+            ctx.fillStyle = this.getColour();
+            ctx.fillRect(this.row * nodeSize, this.column * nodeSize, nodeSize, nodeSize);
+        }
+        else {
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = "#fccde2";
+            ctx.strokeRect(this.row * nodeSize, this.column * nodeSize, nodeSize, nodeSize);
+        }
+    }
+    clicked() {
+        this.isWall = !this.isWall;
     }
 }
 
 function setMouse(e) {
     let rect = canvas.getBoundingClientRect()
-    mouse.px = mouse.x
-    mouse.py = mouse.y
-    mouse.x = e.clientX - rect.left
-    mouse.y = e.clientY - rect.top
-
-    if (mouse.down == true && board.nodes[board.getStartNode()].column == Math.floor(mouse.x / nodeSize) && board.nodes[board.getStartNode()].row == Math.floor(mouse.y / nodeSize)) {
-        board.nodes[board.getStartNode()].isStart = false;
-        board.nodes[board.nodes.findIndex(node => node.column == Math.floor(mouse.px / nodeSize) && node.row == Math.floor(mouse.py / nodeSize))].isStart = true;
-    } else if (mouse.down == true) {
-        board.nodes[board.nodes.findIndex(node => node.column == Math.floor(mouse.x / nodeSize) && node.row == Math.floor(mouse.y / nodeSize))].isWall ^= true;
-        board.drawBoard();
+    changeX = mouse.x
+    changeY = mouse.y
+    mouse.x = floor((e.clientX - rect.left) / nodeSize)
+    mouse.y = floor((e.clientY - rect.top) / nodeSize)
+    if (changeX !== mouse.x) {
+        mouse.dx = changeX;
+    } else if (changeY !== mouse.Y) {
+        mouse.dy = changeY;
     }
-
+    board.updateBoard();
 }
 
 canvas.onmousedown = (e) => {
@@ -113,5 +133,3 @@ canvas.oncontextmenu = (e) => e.preventDefault()
 
 let board = new Board();
 board.drawBoard();
-
-// #c5e3f6 (blue), #fc5c9c (darkpink), #fccde2 (lightpink), #fcefee (cream)
