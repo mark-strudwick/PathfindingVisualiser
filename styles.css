@@ -4,11 +4,29 @@
 }
 #canvas {
     border:1px solid black;
+    padding: 0;
+    margin: auto;
+    display: block;
+    background-color: #fcefee;
 }
-#body {
+body {
     margin: 0;
+    background-color:#c5e3f6;
 }
 body > h1 {
     text-align: center;
     font-family: Asap, sans-serif;
+    color: #fc5c9c;
 }
+.button {
+    background-color: #fccde2; /* Green */
+    border: none;
+    border-radius: 8px;
+    color: #fc5c9c;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    font-size: 16px;
+  }
+/*#c5e3f6 (blue), #fc5c9c (darkpink), #fccde2 (lightpink), #fcefee (cream)*/
