@@ -39,7 +39,6 @@ class Board {
                 }
                 this.nodes[column][row] = new Node(column, row, isStart, isFinish, false);
             }
-
         }
     }
     drawBoard() {
@@ -64,6 +63,50 @@ class Board {
             this.drawBoard();
         }
     }
+    getStartNode() {
+        for (let i = 0; i < this.nodes.length - 1; i++) {
+            for (let j = 0; j < this.nodes[i].length; j++) {
+                let node = this.nodes[i][j]
+                if (node.isStart == true) {
+                    return node;
+                }
+            }
+        }
+    }
+    getFinishNode() {
+        for (let i = 0; i < this.nodes.length - 1; i++) {
+            for (let j = 0; j < this.nodes[i].length; j++) {
+                let node = this.nodes[i][j]
+                if (node.isFinish == true) {
+                    return node;
+                }
+            }
+        }
+    }
+    setStartNodeDistance(distance) {
+        this.getStartNode().distance = distance;
+    }
+    getNeighbours(node) {
+        //top
+        if (node.column > 0 && this.nodes[node.column - 1][node.row]) {
+            this.nodes[node.column][node.row].neighbours.push(this.nodes[node.column - 1][node.row]);
+        }
+
+        //bottom
+        if (node.column < this.nodes.length - 1 && this.nodes[node.column + 1][node.row]) {
+            this.nodes[node.column][node.row].neighbours.push(this.nodes[node.column + 1][node.row]);
+        }
+
+        //left
+        if (this.nodes[node.column][node.row - 1]) {
+            this.nodes[node.column][node.row].neighbours.push(this.nodes[node.column][node.row - 1]);
+        }
+
+        //right
+        if (this.nodes[node.column][node.row + 1]) {
+            this.nodes[node.column][node.row].neighbours.push(this.nodes[node.column][node.row + 1]);
+        }
+    }
 }
 
 class Node {
@@ -81,16 +124,16 @@ class Node {
     getColour() {
         if (this.isStart == true) {
             return "#17b978";
-
         } else if (this.isFinish == true) {
             return "#f85959";
-
         } else if (this.isWall == true) {
             return "black";
+        } else if (this.isVisited == true) {
+            return "yellow";
         }
     }
     draw() {
-        if (this.isStart == true || this.isFinish == true || this.isWall == true) {
+        if (this.isStart == true || this.isFinish == true || this.isWall == true || this.isVisited) {
             ctx.fillStyle = this.getColour();
             ctx.fillRect(this.row * nodeSize, this.column * nodeSize, nodeSize, nodeSize);
         }
@@ -106,39 +149,40 @@ class Node {
 
 }
 
-function dijkstra(nodes) {
-    const visitedNodes = [];
-    // set startnode distance = 0
-    const unvisitedNodes = board.nodes;
+function dijkstra(board) {
+    const visitedNodesInOrder = [];
+    board.setStartNodeDistance(0);
+    const unvisitedNodes = board.nodes.flat();
+    while (unvisitedNodes.length !== 0) {
+        sortNodesByDistance(unvisitedNodes);
+        const closestNode = unvisitedNodes.shift();
+        if (closestNode.isWall === true) continue;
+        if (closestNode.distance === Infinity) return visitedNodesInOrder, board.drawBoard();
+        closestNode.isVisited = true;
+        visitedNodesInOrder.push(closestNode);
+        if (closestNode.isFinish == true) return visitedNodesInOrder, board.drawBoard();
+        board.getNeighbours(board.nodes[closestNode.column][closestNode.row]);
+        unvisitedNeighbours = closestNode.neighbours;
+        for (const neighbour of unvisitedNeighbours) {
+            neighbour.distance = closestNode.distance + 1;
+            neighbour.previousNode = closestNode;
+        }
+    }
 }
 
 function sortNodesByDistance(unvisitedNodes) {
-    unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
+    unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance)
 }
 
-function getNeighbors(nodes, column, row) {
-    //top
-    if (column > 0 && nodes[column - 1][row]) {
-        board.nodes[column][row].neighbours.push(nodes[column - 1][row]);
+function getNodesInShortestPathOrder(finishNode) {
+    const nodesInShortestPathOrder = [];
+    let currentNode = finishNode;
+    while (currentNode !== null) {
+        nodesInShortestPathOrder.unshift(currentNode);
+        currentNode = currentNode.previousNode;
     }
-
-    //bottom
-    if (column < nodes.length - 1 && nodes[column + 1][row]) {
-        board.nodes[column][row].neighbours.push(nodes[column + 1][row]);
-    }
-
-    //left
-    if (nodes[column][row - 1]) {
-        board.nodes[column][row].neighbours.push(nodes[column][row - 1]);
-    }
-
-    //right
-    if (nodes[column][row + 1]) {
-        board.nodes[column][row].neighbours.push(nodes[column][row + 1]);
-    }
+    return nodesInShortestPathOrder;
 }
-
-
 
 function setMouse(e) {
     let rect = canvas.getBoundingClientRect()
