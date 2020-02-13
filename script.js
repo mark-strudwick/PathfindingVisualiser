@@ -25,13 +25,13 @@ class Board {
         for (let column = 0; column < columns; column++) {
             this.nodes[column] = new Array(rows);
             for (let row = 0; row < rows; row++) {
-                if (column == 10 && row == 8) {
+                if (column == 10 && row == 10) {
                     var isStart = true;
                 }
                 else {
                     var isStart = false;
                 }
-                if (column == 10 && row == 10) {
+                if (column == 15 && row == 15) {
                     var isFinish = true;
                 }
                 else {
@@ -164,10 +164,20 @@ function dijkstra(board) {
         board.getNeighbours(board.nodes[closestNode.column][closestNode.row]);
         unvisitedNeighbours = closestNode.neighbours;
         for (const neighbour of unvisitedNeighbours) {
-            neighbour.distance = closestNode.distance + 1;
-            neighbour.previousNode = closestNode;
+            if (neighbour.isVisited == true) {
+                continue
+            } else {
+                neighbour.distance = closestNode.distance + 1;
+                neighbour.previousNode = closestNode;
+            }
         }
     }
+}
+function drawDijkstra(board) {
+    board.drawBoard();
+    dijkstra(board)
+    board.drawBoard();
+    drawShortestPath(board);
 }
 
 function sortNodesByDistance(unvisitedNodes) {
@@ -182,6 +192,15 @@ function getNodesInShortestPathOrder(finishNode) {
         currentNode = currentNode.previousNode;
     }
     return nodesInShortestPathOrder;
+}
+
+function drawShortestPath(board) {
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(board.getFinishNode());
+    for (let i = 1; i < nodesInShortestPathOrder.length - 1; i++) {
+        node = nodesInShortestPathOrder[i]
+        ctx.fillStyle = "green";
+        ctx.fillRect(node.row * nodeSize, node.column * nodeSize, nodeSize, nodeSize);
+    }
 }
 
 function setMouse(e) {
