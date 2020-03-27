@@ -11,8 +11,17 @@
 <body>
     <h1>Pathfinding Visualiser</h1>
     <canvas id="canvas"></canvas>
+    <script src="grid.js"></script>
+    <script src="node.js"></script>
+    <script src="dijkstra.js"></script>
+    <script src="astar.js"></script>
     <script src="script.js"></script>
-    <button class="button">Dijkstra's</button>
+
+    <div class="buttons">
+        <button class="button" onclick="drawDijkstra(grid);">Dijkstra's</button>
+        <button class="button" onclick="drawAStar(grid);">A-Star</button>
+        <button class="button" onclick="window.location.reload();">Clear</button>
+    </div>
 </body>
 
 </html>
