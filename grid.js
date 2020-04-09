@@ -15,15 +15,21 @@ class Grid {
             this.grid[i] = [];
         }
 
+        // Creates start and finish node positions to be proportionate to canvas size
+        let startColumn = round(columns / 4);
+        let startRow = round(rows / 2) - 1;
+        let finishColumn = round(columns - (columns / 4));
+        let finishRow = round(rows / 2) - 1;
+
         for (let column = 0; column < this.columns; column++) {
             for (let row = 0; row < this.rows; row++) {
-                if (column == 1 && row == 1) {
+                if (column == startColumn && row == startRow) {
                     var isStart = true;
                 }
                 else {
                     var isStart = false;
                 }
-                if (column == 6 && row == 8) {
+                if (column == finishColumn && row == finishRow) {
                     var isFinish = true;
                 }
                 else {
@@ -45,23 +51,11 @@ class Grid {
 
     updateBoard() {
         if (mouse.down == true) {
-            /*if (this.grid[mouse.x][mouse.y.isStart] == true) {
-                while (mouse.down == true) {
-                    if (mouse.x !== changeX || mouse.y !== changeY) {
-                        console.log("ye")
-                    }
-                }
-            }*/
-            // check if mouse is in start
-            // check if mouse has moved to new node
-            // turn dx,dy start to false
-            // set x, y start to true
-
-            if (this.grid[mouse.dx][mouse.dy].isStart == true) {
-                this.grid[mouse.dx][mouse.dy].isStart = false;
+            if (this.grid[changeX][changeY].isStart == true) {
+                this.grid[changeX][changeY].isStart = false;
                 this.grid[mouse.x][mouse.y].isStart = true;
-            } else if (this.grid[mouse.dx][mouse.dy].isFinish == true) {
-                this.grid[mouse.dx][mouse.dy].isFinish = false;
+            } else if (this.grid[changeX][changeY].isFinish == true) {
+                this.grid[changeX][changeY].isFinish = false;
                 this.grid[mouse.x][mouse.y].isFinish = true;
             } else if (mouse.x !== changeX || mouse.y !== changeY) {
                 this.grid[mouse.x][mouse.y].clicked();
@@ -94,6 +88,19 @@ class Grid {
 
     setStartNodeDistance(distance) {
         this.getStartNode().distance = distance;
+    }
+
+    // Clears any previous searches
+    resetGrid() {
+        for (let column = 0; column < this.columns; column++) {
+            for (let row = 0; row < this.rows; row++) {
+                this.grid[column][row].neighbours = [];
+                this.grid[column][row].previousNode = null;
+                this.grid[column][row].isVisited = false;
+                this.grid[column][row].distance = Infinity;
+
+            }
+        }
     }
 }
 

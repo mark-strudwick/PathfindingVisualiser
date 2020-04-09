@@ -3,34 +3,55 @@
     padding: 0;
 }
 #canvas {
- 
     padding: 0;
     margin: auto;
     display: block;
-    background-color: #fcefee;
+    background-color: #1b1b1b;
 }
 body {
     margin: 0;
-    background-color:#c5e3f6;
+    background-color:#1b1b1b;
 }
 body > h1 {
     text-align: center;
-    font-family: Asap, sans-serif;
-    color: #fc5c9c;
+    font-family: Roboto, sans-serif;
+    color: #ffffff;
     padding: 20px 0px;
+    font-size: 50px;
+}
+.info {
+    color: #ffffff;
+    font-family: Roboto, sans-serif;
+    text-align: center;
+    padding: 10px;
+}
+h2,h3,h4,#distance,#time,#searched {
+    display: inline;
+    font-size: 20px;
 }
 .button {
-    background-color: #fccde2; /* Green */
+    background-color: #ffffff;
     border: none;
     border-radius: 8px;
-    color: #fc5c9c;
-    padding: 15px 32px;
+    color: #090909;
+    padding: 15px 40px;
+    margin-right: 20px;
     text-decoration: none;
-    
+    font-family: Roboto, sans-serif;
     font-size: 16px;
   }
-.buttons {
-    text-align: center;
-    padding-top: 25px;
+  .button:hover{
+    background-color: #c23616;
+    color: #ffffff;
+    cursor: pointer;
 }
+  .buttons {
+    text-align: center;
+    padding-top: 15px;
+}
+
+::selection {
+    background: #c23616;
+}
+
 /*#c5e3f6 (blue), #fc5c9c (darkpink), #fccde2 (lightpink), #fcefee (cream)*/

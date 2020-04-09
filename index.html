@@ -10,9 +10,18 @@
 
 <body>
     <h1>Pathfinding Visualiser</h1>
+    <div class="info">
+        <h2>Distance: </h2>
+        <div id="distance">0</div>
+        <h3>Time: </h3>
+        <div id="time">0.0</div>
+        <h4>Nodes Searched: </h4>
+        <div id="searched">0</div>
+    </div>
     <canvas id="canvas"></canvas>
     <script src="grid.js"></script>
     <script src="node.js"></script>
+    <script src="clock.js"></script>
     <script src="dijkstra.js"></script>
     <script src="astar.js"></script>
     <script src="script.js"></script>

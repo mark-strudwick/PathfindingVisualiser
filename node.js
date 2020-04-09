@@ -29,9 +29,9 @@ class Node {
         } else if (this.isFinish == true) {
             return "#f85959";
         } else if (this.isWall == true) {
-            return "black";
+            return "#ffffff";
         } else if (this.isVisited == true) {
-            return "yellow";
+            return "#c23616";
         }
     }
 
@@ -42,7 +42,7 @@ class Node {
         }
         else {
             ctx.lineWidth = 1;
-            ctx.strokeStyle = "#fccde2";
+            ctx.strokeStyle = "black";
             ctx.strokeRect(this.column * nodeSize, this.row * nodeSize, nodeSize, nodeSize);
         }
     }
@@ -78,6 +78,5 @@ class Node {
 
     clicked() {
         this.isWall = !this.isWall;
-        console.log(this.isWall);
     }
 }

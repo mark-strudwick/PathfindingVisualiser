@@ -1,16 +1,16 @@
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-
 const floor = Math.floor;
 const abs = Math.abs;
 const round = Math.round;
 
-canvas.width = window.innerWidth - (window.innerWidth / 4);
-canvas.height = window.innerHeight - (window.innerHeight / 4);
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-const nodeSize = 25;
-const rows = round(canvas.height / nodeSize);
-const columns = round(canvas.width / nodeSize);
+const nodeSize = 30;
+const columns = round((window.innerWidth - (window.innerWidth / 4)) / nodeSize);
+const rows = round((window.innerHeight - (window.innerHeight / 4)) / nodeSize);
+
+canvas.width = columns * nodeSize;
+canvas.height = rows * nodeSize;
 
 const mouse = {
     x: undefined,
@@ -25,15 +25,24 @@ function getDistance(nodeA, nodeB) {
 }
 
 function drawDijkstra(grid) {
-    dijkstra(grid)
-    drawShortestPath(grid);
+    var startTime = startClock();
+    grid.resetGrid();
+    grid.drawGrid();
+    dijkstra(grid);
+    finishTime = stopClock(startTime);
+    drawShortestPath(grid, finishTime);
 }
 
 function drawAStar(grid) {
+    var startTime = startClock();
+    grid.resetGrid();
+    grid.drawGrid();
     aStar(grid);
-    drawShortestPath(grid);
+    var finishTime = stopClock(startTime);
+    drawShortestPath(grid, finishTime);
 }
 
+// Used to sort an array into decreasing distance values
 function sortNodesByDistance(unvisitedNodes) {
     unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance)
 }
@@ -48,16 +57,30 @@ function getNodesInShortestPathOrder(finishNode) {
     return nodesInShortestPathOrder;
 }
 
-function drawShortestPath(board) {
-    const nodesInShortestPathOrder = getNodesInShortestPathOrder(board.getFinishNode());
+function drawShortestPath(grid, finishTime) {
+    const nodesInShortestPathOrder = getNodesInShortestPathOrder(grid.getFinishNode());
     for (let i = 1; i < nodesInShortestPathOrder.length - 1; i++) {
         node = nodesInShortestPathOrder[i]
-        ctx.fillStyle = "green";
-        ctx.fillRect(node.row * nodeSize, node.column * nodeSize, nodeSize, nodeSize);
+        ctx.fillStyle = "#C0C0C0";
+        ctx.fillRect(node.column * nodeSize, node.row * nodeSize, nodeSize, nodeSize);
     }
-    ctx.fillStyle = "red";
-    ctx.font = "30px Arial";
-    ctx.fillText(nodesInShortestPathOrder.length - 1, 50, 50);
+
+    // Displays the distance
+    document.getElementById("distance").innerHTML = nodesInShortestPathOrder.length - 1;
+    // Displays the time taken
+    document.getElementById("time").innerHTML = finishTime;
+
+    nodesSearched = 0
+    for (let column = 0; column < grid.columns; column++) {
+        for (let row = 0; row < grid.rows; row++) {
+            if (grid.grid[column][row].isVisited == true) {
+                nodesSearched += 1
+            }
+        }
+    }
+
+    // Displays the amount of nodes searched
+    document.getElementById("searched").innerHTML = nodesSearched;
 }
 
 function setMouse(e) {
