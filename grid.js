@@ -49,7 +49,7 @@ class Grid {
         }
     }
 
-    updateBoard() {
+    updateGrid() {
         if (mouse.down == true) {
             if (this.grid[changeX][changeY].isStart == true) {
                 this.grid[changeX][changeY].isStart = false;

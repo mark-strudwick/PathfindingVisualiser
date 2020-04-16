@@ -29,7 +29,7 @@ class Node {
         } else if (this.isFinish == true) {
             return "#f85959";
         } else if (this.isWall == true) {
-            return "#ffffff";
+            return "#1b1b1b";
         } else if (this.isVisited == true) {
             return "#c23616";
         }

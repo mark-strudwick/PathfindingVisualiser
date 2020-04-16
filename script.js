@@ -94,7 +94,7 @@ function setMouse(e) {
     } else if (changeY !== mouse.Y) {
         mouse.dy = changeY;
     }
-    grid.updateBoard();
+    grid.updateGrid();
 }
 
 canvas.onmousedown = (e) => {

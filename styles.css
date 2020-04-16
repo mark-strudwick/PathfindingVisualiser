@@ -6,7 +6,7 @@
     padding: 0;
     margin: auto;
     display: block;
-    background-color: #1b1b1b;
+    background-color: white;
 }
 body {
     margin: 0;
@@ -28,6 +28,15 @@ body > h1 {
 h2,h3,h4,#distance,#time,#searched {
     display: inline;
     font-size: 20px;
+}
+#distance {
+    padding-right: 10px;
+}
+#time {
+    padding-right: 10px;
+}
+#searched {
+    padding-right: 10px;
 }
 .button {
     background-color: #ffffff;
