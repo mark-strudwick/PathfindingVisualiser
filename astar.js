@@ -9,6 +9,7 @@ function aStar(board) {
         visitedNodesInOrder.push(closestNode);
 
         if (closestNode.isFinish == true) return visitedNodesInOrder, grid.drawGrid();
+        if (closestNode.distance === Infinity) return visitedNodesInOrder, grid.drawGrid();
 
         grid.grid[closestNode.column][closestNode.row].getNeighbours();
         unvisitedNeighbours = closestNode.neighbours;
